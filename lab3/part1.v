@@ -3,7 +3,7 @@
 // Full adder module
 module fullAdder( input c_in, a, b, output c_out, s );
 
-	assign s = a ^ b ^ c_in; // XOR 
+	assign s = (a ^ b) ^ c_in; // XOR 
 	assign c_out = (a & b) | (b & c_in) | (a & c_in);
 
 endmodule
