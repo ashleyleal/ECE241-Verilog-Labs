@@ -24,6 +24,6 @@ endmodule
 // Mapping to FPGA and Instantiating 
 module part1(input [8:0] SW, output [9:0] LEDR);
 
-	fourBitRippleCarryAdder ( .a(SW[7:4]), .b(SW[3:0]), .c_in(SW[8]), .c_out(LEDR[9:6]), .s(LEDR[3:0]) )
+	fourBitRippleCarryAdder ( .a(SW[7:4]), .b(SW[3:0]), .c_in(SW[8]), .c_out(LEDR[9:6]), .s(LEDR[3:0]) );
 
 endmodule
