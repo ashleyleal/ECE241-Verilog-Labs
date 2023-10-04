@@ -10,7 +10,8 @@ vsim part1
 log {/*}
 
 # Test case 1: both input and carry in are 0
-# Objective: ensure output is 0 when all inputs are 0
+# Expectation: carry out and sum are 0
+# Objective: ensure no unexpected inverted output
 
 # input a
 force {SW[7]} 0
