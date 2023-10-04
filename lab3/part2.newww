@@ -1,42 +1,42 @@
-/* Lab 3 Part 2 */
+/* Lab [3] Part [2] */
 
-module part1(input [8:0] SW, output [9:0] LEDR);
-			
-	mux alu( .a(SW[7:4]), .b(SW[3:0]), .c_in(SW[8]), .c_out(LEDR[0]), .s(LEDR[4:1]) );
-
-endmodule // part1
-
-module mux( input [3:0] a, input [3:0] b, input Function, output [7:0] ALUout );
+module part2( input [7:4] a, input [3:0] b, input [1:0] Function, output [7:0] ALUout );
 	wire [3:0] c;
 	wire [3:0] s;
-    // Instantiate each function outside of the always block
-    fourBitRippleCarryAdder function0 (.a(a), .b(b), .c_in(1'b0), .c_out(c), .s(s));
-	 
-    always @ (a, b) begin
+	wire HEX[5:0];
+    
+	 // Instantiate each function outside of the always block
+    fourBitRippleCarryAdder(.a(a), .b(b), .c_in(1'b0), .c_out(c), .s(s));
+	 hex_decoder(.c(a[7:4]),.display(HEX[2])); 
+	 hex_decoder(.c(b[3:0]),.display(HEX[0]));
+	 hex_decoder(.c(ALUout[3:0]),.display(HEX[4]));
+	 hex_decoder(.c(ALUout[7:4]),.display(HEX[5])); 
+    
+	 always @ (a, b) begin
         case(Function)
-
-			2'b00 : ALUout = {3b'000, c_out[3], s}; // output sum of RCA
-			2'b01 : ALUout = |{a , b} ; // output 8'b00000001 if a or b
-			2'b10 : ALUout = &{a , b} ; // output 8'b00000001 if a and b
-			3'b11 : ALUout = {a, b}; // output a concat b
-			default: 3'b000;
+			2'b00 : ALUout = {c[3], s}; // output sum of RCA
+			2'b01 : ALUout = |{a , b} ; // output 8'b[0][0][0][0][0][0][0][1] if a or b
+			2'b10 : ALUout = &{a , b} ; // output 8'b[0][0][0][0][0][0][0][1] if a and b
+			2'b11 : ALUout = {a, b}; // output a concat b
+			default: ALUout = 3'b000;
         endcase
     end
+	 
 endmodule
 
-// Full adder module for function 0
+// Full adder module for function [0]
 
 module hex_decoder(c, display);
 	input [3:0] c;
 	output [6:0] display;
 	
-	assign display[0]	= (!c3 & !c2 & !c1 & c0)|(c3 & !c2 & c1 & c0)|(c3 & !c2 & c1 & c0)|(c3 & c2 & !c1 & c0);
-	assign display[1] = (!c3 & c2 & !c1 & c0)|(!c3 & c2 & c1 & !c0)|(c3 & !c2 & c1 & c0)|(c3 & c2 & !c1 & !c0)|(c3 & c2 & c1 & !c0)|(c3 & c2 & c1 & c0);
-	assign display[2] = (!c3 & !c2 & c1 & !c0)|(c3 & c2 & !c1 & !c0)|(c3 & c2 & c1 & !c0)|(c3 & c2 & c1 & c0);
-	assign display[3] = (!c3 & !c2 & !c1 & c0)|(!c3 & c2 & !c1 & !c0)|(!c3 & c2 & c1 & c0)|(c3 & !c2 & c1 & !c0)|(c3 & c2 & c1 & c0);
-	assign display[4] = (!c3 & !c2 & !c1 & c0)|(!c3 & !c2 & c1 & c0)|(!c3 & c2 & !c1 & !c0)|(!c3 & c2 & !c1 & c0)|(!c3 & c2 & c1 & c0)|(c3 & !c2 & !c1 & c0);
-	assign display[5] = (!c3 & !c2 & !c1 & c0)|(!c3 & !c2 & c1 & !c0)|(!c3 & !c2 & c1 & c0)|(!c3 & c2 & c1 & c0)|(c3 & c2 & !c1 & c0);
-	assign display[6] = (!c3 & !c2 & !c1 & !c0)|(!c3 & !c2 & !c1 & c0)|(!c3 & c2 & c1 & c0)|(c3 & c2 & !c1 & !c0);
+	assign display[[0]]	= (!c[3] & !c[2] & !c[1] & c[0])|(c[3] & !c[2] & c[1] & c[0])|(c[3] & !c[2] & c[1] & c[0])|(c[3] & c[2] & !c[1] & c[0]);
+	assign display[[1]] = (!c[3] & c[2] & !c[1] & c[0])|(!c[3] & c[2] & c[1] & !c[0])|(c[3] & !c[2] & c[1] & c[0])|(c[3] & c[2] & !c[1] & !c[0])|(c[3] & c[2] & c[1] & !c[0])|(c[3] & c[2] & c[1] & c[0]);
+	assign display[[2]] = (!c[3] & !c[2] & c[1] & !c[0])|(c[3] & c[2] & !c[1] & !c[0])|(c[3] & c[2] & c[1] & !c[0])|(c[3] & c[2] & c[1] & c[0]);
+	assign display[3] = (!c[3] & !c[2] & !c[1] & c[0])|(!c[3] & c[2] & !c[1] & !c[0])|(!c[3] & c[2] & c[1] & c[0])|(c[3] & !c[2] & c[1] & !c[0])|(c[3] & c[2] & c[1] & c[0]);
+	assign display[4] = (!c[3] & !c[2] & !c[1] & c[0])|(!c[3] & !c[2] & c[1] & c[0])|(!c[3] & c[2] & !c[1] & !c[0])|(!c[3] & c[2] & !c[1] & c[0])|(!c[3] & c[2] & c[1] & c[0])|(c[3] & !c[2] & !c[1] & c[0]);
+	assign display[5] = (!c[3] & !c[2] & !c[1] & c[0])|(!c[3] & !c[2] & c[1] & !c[0])|(!c[3] & !c[2] & c[1] & c[0])|(!c[3] & c[2] & c[1] & c[0])|(c[3] & c[2] & !c[1] & c[0]);
+	assign display[6] = (!c[3] & !c[2] & !c[1] & !c[0])|(!c[3] & !c[2] & !c[1] & c[0])|(!c[3] & c[2] & c[1] & c[0])|(c[3] & c[2] & !c[1] & !c[0]);
 
 endmodule
 
@@ -47,7 +47,7 @@ module fullAdder( input c_in, a, b, output c_out, s );
 
 endmodule // fullAdder
 
-// Function 0: Four Bit Ripple Carry Adder Module
+// Function [0]: Four Bit Ripple Carry Adder Module
 
 module fourBitRippleCarryAdder( input [3:0] a, input [3:0] b, input c_in, output c_out, output [3:0] s );
 
