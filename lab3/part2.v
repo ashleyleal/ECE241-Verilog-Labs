@@ -12,9 +12,9 @@ module part2( input [3:0] a, input [3:0] b, input Function, output [7:0] ALUout 
         case(Function)
 
         2'b00 : assign ALUout = function0 (); // output sum of RCA
-        2'b01 : assign ALUout = function1; // output 8'b00000001 if a or b
-        2'b10 : assign ALUout = function2; // output 8'b00000001 if a and b
-        3'b11 : assign ALUout = function3; // output a concat b
+        2'b01 : assign ALUout = function1 (); // output 8'b00000001 if a or b
+        2'b10 : assign ALUout = function2 (); // output 8'b00000001 if a and b
+        3'b11 : assign ALUout = function3 (); // output a concat b
 
         endcase
     end
