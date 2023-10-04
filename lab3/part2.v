@@ -1,18 +1,20 @@
 /* Lab 3 Part 2 */
 
 // Map to FPGA
-module part2(input [8:0] SW, output [9:0] LEDR);
+module part2(input A, B, Function, output ALUout);
 
     // Instantiate MUX
-    mux alu( .a(SW[]), .b(SW[]), .Function(), .ALUout())
+    mux alu( .a(A), .b(B), .Function(Function), .ALUout(ALUout))
 
 endmodule
 
 // ALU Module
 module mux( input [3:0] a, input [3:0] b, input Function, output [7:0] ALUout );
 
+    wire []
+
     // Instantiate each function outside of the always block
-    fourBitRippleCarryAdder function0 (.a(), .b(), .c_in(), .c_out(), .s());
+    fourBitRippleCarryAdder function0 (.a(a), .b(b), .c_in(), .c_out(), .s(ALUout));
 
     always @ (a, b) begin
         case(Function)
