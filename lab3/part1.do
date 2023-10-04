@@ -15,19 +15,19 @@ add wave {/*}
 # Objective: ensure no unexpected inverted output
 
 # input a
-force {SW[7]} 0
-force {SW[6]} 0
-force {SW[5]} 0
-force {SW[4]} 0
+force {a[7]} 0
+force {a[6]} 0
+force {a[5]} 0
+force {a[4]} 0
 
 # input b
-force {SW[3]} 0
-force {SW[2]} 0
-force {SW[1]} 0
-force {SW[0]} 0
+force {b[3]} 0
+force {b[2]} 0
+force {b[1]} 0
+force {b[0]} 0
 
 # carry in
-force {SW[8]} 0
+force {c_in} 0
 
 run 10ns
 
@@ -36,18 +36,18 @@ run 10ns
 # Objective: check if carry outs work as expected
 
 # input a
-force {SW[7]} 1
-force {SW[6]} 1
-force {SW[5]} 1
-force {SW[4]} 1
+force {a[7]} 1
+force {a[6]} 1
+force {a[5]} 1
+force {a[4]} 1
 
 # input b
-force {SW[3]} 1
-force {SW[2]} 1
-force {SW[1]} 1
-force {SW[0]} 1
+force {b[3]} 1
+force {b[2]} 1
+force {b[1]} 1
+force {bSW[0]} 1
 
 # carry in
-force {SW[8]} 1
+force {c_in} 1
 
 run 10ns
