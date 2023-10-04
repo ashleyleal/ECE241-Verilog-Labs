@@ -1,12 +1,5 @@
 /* Lab 3 Part 1 */
 
-// Mapping to FPGA and Instantiating 
-module part1(input [8:0] SW, output [9:0] LEDR);
-
-	fourBitRippleCarryAdder FBRCAM ( .a(SW[7:4]), .b(SW[3:0]), .c_in(SW[8]), .c_out(LEDR[9:6]), .s(LEDR[3:0]) );
-
-endmodule // part1
-
 
 // Full adder module
 
@@ -30,4 +23,11 @@ module fourBitRippleCarryAdder( input [3:0] a, input [3:0] b, input c_in, output
     fullAdder bit3 (.c_in(c[2]), .a(a[3]), .b(b[3]), .c_out(c_out), .s(s[3]));
 	
 endmodule // fourBitRippleCarryAdder
+
+// Mapping to FPGA and Instantiating 
+module part1(input [8:0] SW, output [9:0] LEDR);
+
+	fourBitRippleCarryAdder FBRCAM ( .a(SW[7:4]), .b(SW[3:0]), .c_in(SW[8]), .c_out(LEDR[9]), .s(LEDR[3:0]) );
+
+endmodule // part1
 
