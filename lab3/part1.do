@@ -5,7 +5,7 @@ vlib work
 vlog part1.v
 
 # Simulate the design
-vsim part1
+vsim part1 // errors here for some reason
 
 log {/*}
 
