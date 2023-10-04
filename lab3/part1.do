@@ -5,9 +5,10 @@ vlib work
 vlog part1.v
 
 # Simulate the design
-vsim part1 // errors here for some reason
+vsim part1 # errors here for some reason
 
 log {/*}
+add wave {/*}
 
 # Test case 1: both input and carry in are 0
 # Expectation: carry out and sum are 0
@@ -29,3 +30,4 @@ force {SW[0]} 0
 force {SW[8]} 0
 
 run 10ns
+
