@@ -1,5 +1,4 @@
-// A input is Data
-// B input is the 4 least significant bits of ALUout
+// 6 Test Cases Passed
 
 module part2(Clock, Reset_b, Data, Function, ALUout);
     
