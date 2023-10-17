@@ -3,34 +3,32 @@
 
 module part2(Clock, Reset_b, Data, Function, ALUout);
     
-	 input wire Clock, Reset_b, 
-    input [3:0] Data, 
-    input [1:0] Function,
-    output reg [7:0] ALUout
+	 input wire Clock, Reset_b; 
+    input [3:0] Data; 
+    input [1:0] Function;
+    output[7:0] ALUout;
 
 	 reg [7:0] Pre_reg_ALUout;
 	 
-	 
-    always@(*)
+	 always@(*)
     begin
 	 
-	 8_bit_register 8_reg (Clock, Reset_b, )
-	 
-	 A <= Data;
-	 B <= 
-	 
     case (Function)
-        2'b00: Pre_reg_ALUout <= A + B 
-        2'b01: Pre_reg_ALUout <= A * B
-        2'b10: Pre_reg_ALUout <= B <<< 4
-        2'b11: Pre_reg_ALUout <= B 
-        default: 8'b00000000
+        2'b00: Pre_reg_ALUout <= Data + ALUout; 
+        2'b01: Pre_reg_ALUout <= Data * ALUout;
+        2'b10: Pre_reg_ALUout <= ALUout << Data;
+        2'b11: Pre_reg_ALUout <= ALUout; 
+        default: Pre_reg_ALUout <= 8'b00000000;
     endcase
     end
-
+	 
+	 eight_bit_register u1 (Clock, Reset_b, Pre_reg_ALUout, ALUout);
+	 //assign ALUout = Pre_reg_ALUout;
+	 
 endmodule
 
-module 8_bit_register (
+
+module eight_bit_register (
 	input wire clk ,
 	input wire reset_b ,
 	input wire [7:0]d ,
@@ -38,9 +36,8 @@ module 8_bit_register (
 	
 always@ ( posedge clk )
 begin
-	if ( reset_b ) q <= 1 ’ b0 ;
+	if ( reset_b ) q <= 1'b0 ;
 	else q <= d ;
 end
 endmodule
-
 
