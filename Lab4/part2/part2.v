@@ -7,11 +7,16 @@ module part2(Clock, Reset_b, Data, Function, ALUout);
     input [1:0] Function,
     output reg [7:0] ALUout
 
+	 reg [7:0] Pre_reg_ALUout;
+	 
+	 A
+	 B
+	 
     always@(*)
     begin
     case (Function)
-        2'b00:  <= 
-        2'b01:
+        2'b00: Pre_reg_ALUout <= A + B // pseudocode for now
+        2'b01: Pre_reg_ALUout <= A * B
         2'b10:
         2'b11:
         default: 8'b00000000
