@@ -1,3 +1,6 @@
+// A input is Data
+// B input is the 4 least significant bits of ALUout
+
 module part2(Clock, Reset_b, Data, Function, ALUout);
     input wire Clock, Reset_b, 
     input [3:0] Data, 
@@ -7,13 +10,25 @@ module part2(Clock, Reset_b, Data, Function, ALUout);
     always@(*)
     begin
     case (Function)
-        2'b00: 
+        2'b00:  <= 
         2'b01:
         2'b10:
         2'b11:
-        default: 
+        default: 8'b00000000
     endcase
     end
 
 endmodule
 
+module 8_bit_register (
+	input wire clk ,
+	input wire reset_b ,
+	input wire [7:0]d ,
+	output reg[7:0] q);
+	
+always@ ( posedge clk )
+begin
+	if ( reset_b ) q <= 1 ’ b0 ;
+	else q <= d ;
+end
+endmodule
