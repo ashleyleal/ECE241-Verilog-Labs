@@ -40,6 +40,9 @@ module RateDivider #(
     input [1:0] Speed,
     output Enable
 );
+
+
+
 endmodule
 
 // Display Counter
