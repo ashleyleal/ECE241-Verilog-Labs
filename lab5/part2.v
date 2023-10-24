@@ -41,7 +41,13 @@ module RateDivider #(
     output Enable
 );
 
-
+always@(posedge ClockIn, negedge Reset)
+	begin
+	if (~Reset)
+		Enable <= 1'b0;
+	else
+		Enable <= ~Enable;
+	end
 
 endmodule
 
@@ -53,3 +59,5 @@ module DisplayCounter (
     output [3:0] CounterValue
 );
 endmodule
+
+//
