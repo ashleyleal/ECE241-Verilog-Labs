@@ -107,10 +107,14 @@ module DisplayCounter (
             CounterValue <= 4'b0;
         end
         else if (EnableDC) begin
-            CounterValue <= CounterValue + 1; // go to the next hexadecimal on enable signal
+            if (CounterValue == 4'hF) 
+                // Reset to 0 if the maximum value is reached so that it wraps
+                CounterValue <= 4'b0;
+            else 
+                //increment the counter value if EnableDC 
+                CounterValue <= CounterValue + 1;
         end
     end
-
 endmodule
 
 // Hex Display Module
