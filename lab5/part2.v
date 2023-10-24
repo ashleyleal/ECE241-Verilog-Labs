@@ -7,8 +7,7 @@ module part2 #(
     input [1:0] Speed,
     output [3:0] CounterValue
 );
-
-  reg EnableDC;
+  wire EnableDC;
 
   // Instantiate Rate Divider
   RateDivider #(
@@ -54,42 +53,45 @@ module RateDivider #(
     // If Speed changes while counting down, counter should continue to count down to 0 and only change speed after generating the enable signal
 
     // Set rate at which numbers change (not sure if I should be multiplying or dividing lol)
-    always @(Speed) begin
-        case(Speed)
-        // Full speed (once every clock period)
-            2'b00: d <= 0; 
-            // 1 Hz (once a second)
-            2'b01: d <= CLOCK_FREQUENCY - 1; 
-             // 0.5 Hz (once every 2 seconds)
-            2'b10: d <= CLOCK_FREQUENCY * 2 - 1;
-            // 0.25 Hz (once every 4 sec)
-            2'b11: d <= CLOCK_FREQUENCY * 4 - 1; 
-            // Default to full (not specified in the table?)
-            default: d <= 0; 
-        endcase
-    end
-
-    always @(posedge ClockIn or negedge Reset) // not sure about pos/neg condition for reset
-    begin
+    always @(Speed or Reset) begin
         if (Reset) begin
             // reset counter to 0 on reset, keep enable to low just in case??
             q <= 0;
             Enable <= 1'b0;
         end
-        else if (q == d) begin
-            // reset counter to 0 when target reached and fire enable true
-            q <= 0;
-            Enable <= 1'b1;
-        end
-        else begin
-            // keep counting, keep enable to low just in case??
-            q <= q + 1;
-            Enable <= 1'b0;
+        else 
+        begin
+            case(Speed)
+                // Full speed (once every clock period)
+                2'b00: d <= 0; 
+                // 1 Hz (once a second)
+                2'b01: d <= CLOCK_FREQUENCY - 1; 
+                // 0.5 Hz (once every 2 seconds)
+                2'b10: d <= CLOCK_FREQUENCY * 2 - 1;
+                // 0.25 Hz (once every 4 sec)
+                2'b11: d <= CLOCK_FREQUENCY * 4 - 1; 
+                // Default to full (not specified in the table?)
+                default: d <= 0; 
+            endcase
+
+            if (q == d) 
+            begin
+                // reset counter to 0 when target reached and fire enable true
+                q <= 0;
+                Enable <= 1'b1;
+                //Enable <= 1'b1;
+            end
+            else 
+            begin
+                // keep counting, keep enable to low just in case??
+                q <= q + 1;
+                Enable <= 1'b0;
+                //Enable <= 1'b0;
+            end
         end
     end
 
 endmodule
-
 
 // Display Counter Module keeps track of a 4-bit value and increments it when the RateDivider provides EnableDC; provides a continuous stream of hexadecimal values matching the current count state of the counter to show on display
 module DisplayCounter (
