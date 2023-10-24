@@ -10,7 +10,6 @@ module part2 #(
 
   reg EnableDC;
 
-
   // Instantiate Rate Divider
   RateDivider #(
       .CLOCK_FREQUENCY(CLOCK_FREQUENCY)
@@ -29,48 +28,97 @@ module part2 #(
       .CounterValue(CounterValue)
   );
 
+  // Hex Decoder
+//   HexDecoder HexInst (
+//     .hex(CounterValue), .display()  
+//   );
+
 endmodule
 
-// Rate Divider Module: takes a fast clock signal and divides its frequency to generate a slower pulse signal, enabling the DisplayCounter to update its value at controlled intervals
+// Rate Divider Module takes a fast clock signal and divides its frequency to generate a slower pulse signal, enabling the DisplayCounter to update its value at controlled intervals
 module RateDivider #(
     parameter CLOCK_FREQUENCY = 50000000
 ) (
     input ClockIn,
     input Reset,
     input [1:0] Speed,
-    output Enable
+    output reg Enable
 );
+    // Automatically find minimum number of bits for clock frequency (flexibility)
+    // counter
+    reg [($clog2(CLOCK_FREQUENCY) - 1):0] q;
+    // target to be set by speed 
+    reg [($clog2(CLOCK_FREQUENCY) - 1):0] d; 
 
-always@(posedge ClockIn, negedge Reset)
-	begin
-	if (~Reset)
-		Enable <= 1'b0;
-	else
-		Enable <= ~Enable;
-	end
+    // Must count down to 0 and generate an enable pulse when it reaches 0 
+    // If Speed changes while counting down, counter should continue to count down to 0 and only change speed after generating the enable signal
+
+    // Set rate at which numbers change (not sure if I should be multiplying or dividing lol)
+    always @(Speed) begin
+        case(Speed)
+        // Full speed (once every clock period)
+            2'b00: d <= 0; 
+            // 1 Hz (once a second)
+            2'b01: d <= CLOCK_FREQUENCY - 1; 
+             // 0.5 Hz (once every 2 seconds)
+            2'b10: d <= CLOCK_FREQUENCY * 2 - 1;
+            // 0.25 Hz (once every 4 sec)
+            2'b11: d <= CLOCK_FREQUENCY * 4 - 1; 
+            // Default to full (not specified in the table?)
+            default: d <= 0; 
+        endcase
+    end
+
+    always @(posedge ClockIn or negedge Reset) // not sure about pos/neg condition for reset
+    begin
+        if (Reset) begin
+            // reset counter to 0 on reset, keep enable to low just in case??
+            q <= 0;
+            Enable <= 1'b0;
+        end
+        else if (q == d) begin
+            // reset counter to 0 when target reached and fire enable true
+            q <= 0;
+            Enable <= 1'b1;
+        end
+        else begin
+            // keep counting, keep enable to low just in case??
+            q <= q + 1;
+            Enable <= 1'b0;
+        end
+    end
 
 endmodule
 
-// Display Counter Module:  keeps track of a 4-bit value, continuously incrementing it when the RateDivider provides the enabling signal (EnableDC)
-// The CounterValue provides a continuous stream of hexadecimal values from 0 to F, reflecting the current count state of the counter
+
+// Display Counter Module keeps track of a 4-bit value and increments it when the RateDivider provides EnableDC; provides a continuous stream of hexadecimal values matching the current count state of the counter to show on display
 module DisplayCounter (
     input Clock,
     input Reset,
     input EnableDC,
-    output [3:0] CounterValue
+    // 4 for hexadecimal
+    output reg [3:0] CounterValue
 );
-
+    always @(posedge Clock or negedge Reset)
+    begin
+        if (~Reset) begin
+            CounterValue <= 4'b0;
+        end
+        else if (EnableDC) begin
+            CounterValue <= CounterValue + 1; // go to the next hexadecimal on enable signal
+        end
+    end
 
 endmodule
 
 // Hex Display Module
-module hex_display(
+module HexDecoder(
     input [3:0] hex, 
     output reg [6:0] display
 );
 always @(*)
     begin
-    case(hex_input)
+    case(hex)
 
         4'h0: display = 7'b1000000; // 0
         4'h1: display = 7'b1111001; // 1
