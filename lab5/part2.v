@@ -27,10 +27,10 @@ module part2 #(
       .CounterValue(CounterValue)
   );
 
-  // Hex Decoder
-//   HexDecoder HexInst (
-//     .hex(CounterValue), .display()  
-//   );
+	// Hex Decoder
+	HexDecoder HexInst (
+     .hex(CounterValue), .display()  
+   );
 
 endmodule
 
@@ -45,46 +45,58 @@ module RateDivider #(
 );
     // Automatically find minimum number of bits for clock frequency (flexibility)
     // counter
-    reg [($clog2(CLOCK_FREQUENCY) - 1):0] q;
-    // target to be set by speed 
-    reg [($clog2(CLOCK_FREQUENCY) - 1):0] d; 
+    reg [($clog2(CLOCK_FREQUENCY) - 1):0] maxCount;
+    reg [($clog2(CLOCK_FREQUENCY) - 1):0] counter; 
 
     // Must count down to 0 and generate an enable pulse when it reaches 0 
     // If Speed changes while counting down, counter should continue to count down to 0 and only change speed after generating the enable signal
 
-    // Set rate at which numbers change (not sure if I should be multiplying or dividing lol)
-always @(posedge ClockIn or negedge Reset or Speed) begin
+    // Set rate at which numbers change
+	always @(posedge ClockIn) begin
         if (Reset) begin
-            // reset counter to 0 on reset, keep enable to low just in case??
-            q <= 0;
+            // reset counter to 0 on reset, keep enable to low 
+            counter <= maxCount;
             Enable <= 1'b0;
+				case(Speed)
+                // Full speed (once every clock period)
+                2'b00: maxCount = 0; 
+                // 1 Hz (once a second)
+                2'b01: maxCount = CLOCK_FREQUENCY - 1; 
+                // 0.5 Hz (once every 2 seconds)
+                2'b10: maxCount = CLOCK_FREQUENCY * 2 - 1;
+                // 0.25 Hz (once every 4 sec)
+                2'b11: maxCount = CLOCK_FREQUENCY * 4 - 1; 
+                // Default to full (not specified in the table?)
+                default: maxCount = 0; 
+            endcase
+
         end
         else 
         begin
-            case(Speed)
-                // Full speed (once every clock period)
-                2'b00: d <= 0; 
-                // 1 Hz (once a second)
-                2'b01: d <= CLOCK_FREQUENCY - 1; 
-                // 0.5 Hz (once every 2 seconds)
-                2'b10: d <= CLOCK_FREQUENCY * 2 - 1;
-                // 0.25 Hz (once every 4 sec)
-                2'b11: d <= CLOCK_FREQUENCY * 4 - 1; 
-                // Default to full (not specified in the table?)
-                default: d <= 0; 
-            endcase
-
-            if (q == d) 
+            if (counter == 0) // 
             begin
-                // reset counter to 0 when target reached and fire enable true
-                q <= 0;
+                // reset counter when target reached and fire enable true
                 Enable <= 1'b1;
+					 counter <= maxCount;
+					 case(Speed)
+						// Full speed (once every clock period)
+						2'b00: maxCount = 0; 
+						// 1 Hz (once a second)
+						2'b01: maxCount = CLOCK_FREQUENCY - 1; 
+						// 0.5 Hz (once every 2 seconds)
+						2'b10: maxCount = CLOCK_FREQUENCY * 2 - 1;
+						// 0.25 Hz (once every 4 sec)
+						2'b11: maxCount = CLOCK_FREQUENCY * 4 - 1; 
+						// Default to full (not specified in the table?)
+						default: maxCount = 0; 
+            endcase
             end
+
             else 
             begin
-                // keep counting, keep enable to low just in case??
-                q <= q + 1;
-                Enable <= 1'b0;
+                // keep counting down, keep enable to low just in case??
+				 Enable <= 1'b0;
+					 counter <= counter - 1;
             end
         end
     end
@@ -99,7 +111,7 @@ module DisplayCounter (
     // 4 for hexadecimal
     output reg [3:0] CounterValue
 );
-    always @(posedge Clock or negedge Reset)
+    always @(posedge Clock)
     begin
         if (Reset) begin
             CounterValue <= 4'b0;
