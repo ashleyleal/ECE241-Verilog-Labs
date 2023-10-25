@@ -53,7 +53,7 @@ module RateDivider #(
     // If Speed changes while counting down, counter should continue to count down to 0 and only change speed after generating the enable signal
 
     // Set rate at which numbers change (not sure if I should be multiplying or dividing lol)
-    always @(Speed or Reset) begin
+always @(posedge ClockIn or negedge Reset or Speed) begin
         if (Reset) begin
             // reset counter to 0 on reset, keep enable to low just in case??
             q <= 0;
@@ -79,14 +79,12 @@ module RateDivider #(
                 // reset counter to 0 when target reached and fire enable true
                 q <= 0;
                 Enable <= 1'b1;
-                //Enable <= 1'b1;
             end
             else 
             begin
                 // keep counting, keep enable to low just in case??
                 q <= q + 1;
                 Enable <= 1'b0;
-                //Enable <= 1'b0;
             end
         end
     end
@@ -103,12 +101,12 @@ module DisplayCounter (
 );
     always @(posedge Clock or negedge Reset)
     begin
-        if (~Reset) begin
+        if (Reset) begin
             CounterValue <= 4'b0;
         end
         else if (EnableDC) begin
             if (CounterValue == 4'hF) 
-                // Reset to 0 if the maximum value is reached so that it wraps
+                // Reset to 0 if the maximum value is reached
                 CounterValue <= 4'b0;
             else 
                 //increment the counter value if EnableDC 
