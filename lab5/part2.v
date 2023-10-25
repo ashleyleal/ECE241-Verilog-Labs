@@ -9,6 +9,15 @@ module part2 #(
 );
   wire EnableDC;
 
+	wire CLOCK_50;
+	wire [9:0] SW;
+	wire [3:0] HEX0;
+	
+	assign ClockIn = CLOCK_50;
+	assign Reset = SW[9];
+	assign Speed = SW[1:0];
+//	assign CounterValue = HEX0;
+
   // Instantiate Rate Divider
   RateDivider #(
       .CLOCK_FREQUENCY(CLOCK_FREQUENCY)
@@ -29,7 +38,7 @@ module part2 #(
 
 	// Hex Decoder
 	HexDecoder HexInst (
-     .hex(CounterValue), .display()  
+     .hex(CounterValue), .display(HEX0)  
    );
 
 endmodule
@@ -56,7 +65,6 @@ module RateDivider #(
         if (Reset) begin
             // reset counter to 0 on reset, keep enable to low 
             counter <= maxCount;
-            Enable <= 1'b0;
 				case(Speed)
                 // Full speed (once every clock period)
                 2'b00: maxCount = 0; 
@@ -95,7 +103,7 @@ module RateDivider #(
             else 
             begin
                 // keep counting down, keep enable to low just in case??
-				 Enable <= 1'b0;
+					 Enable <= 1'b0;
 					 counter <= counter - 1;
             end
         end
@@ -135,7 +143,6 @@ module HexDecoder(
 always @(*)
     begin
     case(hex)
-
         4'h0: display = 7'b1000000; // 0
         4'h1: display = 7'b1111001; // 1
         4'h2: display = 7'b0100100; // 2
