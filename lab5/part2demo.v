@@ -8,6 +8,11 @@ module part2 #(
     output [3:0] CounterValue
 );
   wire EnableDC;
+    wire SW[9:0];
+    assign ClockIn = CLOCK_50;
+    assign Reset = SW[9];
+    assign Speed = SW[1:0];
+    assign CounterValue = HEX0;
 
   // Instantiate Rate Divider
   RateDivider #(
