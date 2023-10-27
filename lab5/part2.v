@@ -9,15 +9,6 @@ module part2 #(
 );
   wire EnableDC;
 
-	wire CLOCK_50;
-	wire [9:0] SW;
-	wire [3:0] HEX0;
-	
-	assign ClockIn = CLOCK_50;
-	assign Reset = SW[9];
-	assign Speed = SW[1:0];
-//	assign CounterValue = HEX0;
-
   // Instantiate Rate Divider
   RateDivider #(
       .CLOCK_FREQUENCY(CLOCK_FREQUENCY)
@@ -36,10 +27,10 @@ module part2 #(
       .CounterValue(CounterValue)
   );
 
-	// Hex Decoder
-	HexDecoder HexInst (
-     .hex(CounterValue), .display(HEX0)  
-   );
+// 	// Hex Decoder
+// 	HexDecoder HexInst (
+//      .hex(CounterValue), .display(HEX0)  
+//    );
 
 endmodule
 
@@ -50,22 +41,36 @@ module RateDivider #(
     input ClockIn,
     input Reset,
     input [1:0] Speed,
-    output reg Enable
+    output Enable
 );
     // Automatically find minimum number of bits for clock frequency (flexibility)
     // counter
-    reg [($clog2(CLOCK_FREQUENCY) - 1):0] maxCount;
-    reg [($clog2(CLOCK_FREQUENCY) - 1):0] counter; 
+    reg [31:0] maxCount;
+    reg [31:0] counter; 
 
-    // Must count down to 0 and generate an enable pulse when it reaches 0 
-    // If Speed changes while counting down, counter should continue to count down to 0 and only change speed after generating the enable signal
-
-    // Set rate at which numbers change
 	always @(posedge ClockIn) begin
         if (Reset) begin
             // reset counter to 0 on reset, keep enable to low 
             counter <= maxCount;
 				case(Speed)
+                // Full speed (once every clock period)
+                2'b00: maxCount = 32'b0; 
+                // 1 Hz (once a second)
+                2'b01: maxCount = CLOCK_FREQUENCY - 1; 
+                // 0.5 Hz (once every 2 seconds)
+                2'b10: maxCount = CLOCK_FREQUENCY * 2 - 1;
+                // 0.25 Hz (once every 4 sec)
+                2'b11: maxCount = CLOCK_FREQUENCY * 4 - 1; 
+            endcase
+            counter <= maxCount;
+        end
+
+        if(counter != 32'b0) begin
+            counter <= counter - 1;
+        end
+
+        else begin
+        		case(Speed)
                 // Full speed (once every clock period)
                 2'b00: maxCount = 0; 
                 // 1 Hz (once a second)
@@ -74,40 +79,12 @@ module RateDivider #(
                 2'b10: maxCount = CLOCK_FREQUENCY * 2 - 1;
                 // 0.25 Hz (once every 4 sec)
                 2'b11: maxCount = CLOCK_FREQUENCY * 4 - 1; 
-                // Default to full (not specified in the table?)
-                default: maxCount = 0; 
             endcase
-
-        end
-        else 
-        begin
-            if (counter == 0) // 
-            begin
-                // reset counter when target reached and fire enable true
-                Enable <= 1'b1;
-					 counter <= maxCount;
-					 case(Speed)
-						// Full speed (once every clock period)
-						2'b00: maxCount = 0; 
-						// 1 Hz (once a second)
-						2'b01: maxCount = CLOCK_FREQUENCY - 1; 
-						// 0.5 Hz (once every 2 seconds)
-						2'b10: maxCount = CLOCK_FREQUENCY * 2 - 1;
-						// 0.25 Hz (once every 4 sec)
-						2'b11: maxCount = CLOCK_FREQUENCY * 4 - 1; 
-						// Default to full (not specified in the table?)
-						default: maxCount = 0; 
-            endcase
-            end
-
-            else 
-            begin
-                // keep counting down, keep enable to low just in case??
-					 Enable <= 1'b0;
-					 counter <= counter - 1;
-            end
+            counter <= maxCount;
         end
     end
+
+    assign Enable = (counter == 0) ? 1'b1 : 1'b0;
 
 endmodule
 
@@ -121,16 +98,11 @@ module DisplayCounter (
 );
     always @(posedge Clock)
     begin
-        if (Reset) begin
+        if (Reset == 1'b1) begin
             CounterValue <= 4'b0;
         end
-        else if (EnableDC) begin
-            if (CounterValue == 4'hF) 
-                // Reset to 0 if the maximum value is reached
-                CounterValue <= 4'b0;
-            else 
-                //increment the counter value if EnableDC 
-                CounterValue <= CounterValue + 1;
+        else if (EnableDC == 1'b1) begin
+            CounterValue <= CounterValue + 1;
         end
     end
 endmodule
