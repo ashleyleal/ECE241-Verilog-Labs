@@ -10,7 +10,6 @@ output wire NewBitOut
 
 	//Morse Encoder here
 	wire[11:0] MorseCode;
-	wire rotate;
 	wire[11:0] RegOut;
 
 	MorseLUT LUTInst (.s(Letter), .q(MorseCode));
@@ -21,10 +20,10 @@ output wire NewBitOut
       .ClockIn(ClockIn),
       .Reset  (Reset),
       .Speed  (2'b00),
-      .Enable (1'b1)
+      .Enable (Start)
   );
 
-	ShiftReg12Bit RegInst (.clock(ClockIn), .reset(Reset), .ParallelLoadn(Start), .RotateRight(rotate), .ASRight(RegOut), .Data_IN(MorseCode), .Q());
+	ShiftReg12Bit RegInst (.clock(ClockIn), .reset(Reset), .ParallelLoadn(Start), .RotateRight(DotDashOut), .ASRight(NewBitOut), .Data_IN(MorseCode), .Q(RegOut));
 
 endmodule
 
