@@ -1,8 +1,8 @@
-PWD c:/Users/Anlea/ece241/unnamedcourse/lab6
+PWD c:/Users/Anlea/ece241/unnamedcourse/lab6/notes
 INPUT c:/texlive/2023/texmf.cnf
 INPUT c:/texlive/2023/texmf-dist/web2c/texmf.cnf
 INPUT c:/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT c:/Users/Anlea/ece241/unnamedcourse/lab6/notes.tex
+INPUT c:/Users/Anlea/ece241/unnamedcourse/lab6/notes/notes.tex
 OUTPUT notes.log
 INPUT c:/texlive/2023/texmf-dist/tex/latex/base/article.cls
 INPUT c:/texlive/2023/texmf-dist/tex/latex/base/article.cls

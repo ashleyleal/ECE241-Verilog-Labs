@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1698727179 "c:/Users/Anlea/ece241/unnamedcourse/lab6/notes.tex" "notes.pdf" "notes" 1698727180 0
-  "c:/Users/Anlea/ece241/unnamedcourse/lab6/notes.tex" 1698727178 2089 244e181a6e82d503ac4c0dd4ba8a2eb9 ""
+["pdflatex"] 1698790431 "c:/Users/Anlea/ece241/unnamedcourse/lab6/notes/notes.tex" "notes.pdf" "notes" 1698790431 0
+  "c:/Users/Anlea/ece241/unnamedcourse/lab6/notes/notes.tex" 1698727178 2089 244e181a6e82d503ac4c0dd4ba8a2eb9 ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1694212306 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1694213622 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1694213120 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -23,7 +23,7 @@
   "c:/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1694218637 4703462 5df3913b339a4fb9b4dc6c57dc378863 ""
   "c:/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1694218744 8183810 42a528aafd499c1571a66d83742103e5 ""
   "c:/texlive/2023/texmf.cnf" 1694218616 713 e69b156964470283e0530f5060668171 ""
-  "notes.aux" 1698727180 186 05dfb7d4d581fc967fe4d334863890f0 "pdflatex"
+  "notes.aux" 1698790431 186 05dfb7d4d581fc967fe4d334863890f0 "pdflatex"
   "notes.tex" 1698727178 2089 244e181a6e82d503ac4c0dd4ba8a2eb9 ""
   (generated)
   "notes.aux"
