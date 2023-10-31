@@ -1,14 +1,14 @@
 //SW[0] reset when 0
 //SW[1] input signal
 
-//KEY[0] clock signal
+//KEY[0] Clock signal
 
 //LEDR[3:0] displays current state
 //LEDR[9] displays output
 
-module part1(clock, resetn, w, z, CurState);
-    input clock;
-    input resetn;
+module part1(Clock, Reset, w, z, CurState);
+    input Clock;
+    input Reset;
     input w;
     output z;
     output [3:0] CurState;
@@ -43,9 +43,9 @@ module part1(clock, resetn, w, z, CurState);
     end // state_table
 
     // State Registers
-    always @(posedge clock)
+    always @(posedge Clock)
     begin: state_FFs
-        if(resetn == 1'b0)
+        if(Reset == 1'b1)
             y_Q <=  A; // Should set reset state to state A
         else
             y_Q <= Y_D;
@@ -57,4 +57,3 @@ module part1(clock, resetn, w, z, CurState);
 
     assign CurState = y_Q;
 endmodule
-
