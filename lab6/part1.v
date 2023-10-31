@@ -17,14 +17,14 @@ module part1(Clock, Reset, w, z, CurState);
 
     localparam A = 4'b0000, B = 4'b0001, C = 4'b0010, D = 4'b0011, E = 4'b0100, F = 4'b0101, G = 4'b0110;
 
-
     //State table
     //The state table should only contain the logic for state transitions
     //Do not mix in any output logic. The output logic should be handled separately.
     //This will make it easier to read, modify and debug the code.
+    // State combinational circuit
     always@(*)
     begin: state_table
-        case (y_Q)
+        case (y_Q) 
             A: begin
                    if (!w) Y_D = A;
                    else Y_D = B;
@@ -33,16 +33,32 @@ module part1(Clock, Reset, w, z, CurState);
                    if(!w) Y_D = A;
                    else Y_D = C;
                end
-            C: //???
-            D: //???
-            E: //???
-            F: //???
-            G: //???
+            C: begin
+                   if(!w) Y_D = E;
+                   else Y_D = D;
+               end
+            D: begin
+                   if(!w) Y_D = E;
+                   else Y_D = F;
+               end
+            E: begin
+                   if(!w) Y_D = A;
+                   else Y_D = G;
+               end
+            F: begin
+                   if(!w) Y_D = E;
+                   else Y_D = F;
+               end
+            G: begin
+                   if(!w) Y_D = A;
+                   else Y_D = C;
+               end
             default: Y_D = A;
         endcase
     end // state_table
 
     // State Registers
+    // Sequential Block
     always @(posedge Clock)
     begin: state_FFs
         if(Reset == 1'b1)
@@ -53,7 +69,8 @@ module part1(Clock, Reset, w, z, CurState);
 
     // Output logic
     // Set z to 1 to turn on LED when in relevant states
-    assign z = // ((y_Q == ??) | (y_Q == ??));
+    assign z = ((y_Q == F) | (y_Q == G));
 
     assign CurState = y_Q;
 endmodule
+

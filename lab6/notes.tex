@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{array}
+
+\begin{document}
+
+
+\section*{Notes:}
+\begin{itemize}
+    \item $y_Q$: present state
+    \item $y_D$: present state
+\end{itemize}
+
+State transitions are specified by two separate always blocks. 
+
+The first block describes the required combinational circuit. It uses a case statement to give the value of the next state for each value of the present state. Each case alternative corresponds to a present state of the machine, and the associated if-else statement specifies the next state to be reached according to the value of input.
+
+The second always block introduces flip-flops into the circuit. Its sensitivity list comprises the reset and clock signals.
+\\
+\\
+\textbf{Part 1 State Table}
+
+\begin{table}[ht]
+    \centering
+    \caption{State Table}
+    \label{tab:state-table}
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{State} & \textbf{w = 0} & \textbf{w = 1} & \textbf{z} \\
+    \hline
+    A & A & B & 0\\
+    \hline
+    B & A & C & 0\\
+    \hline
+    C & E & D & 0\\
+    \hline
+    D & E & F & 0\\
+    \hline
+    E & A & G & 0\\
+    \hline
+    F & E & F & 1\\
+    \hline
+    G & A & C & 1\\
+
+    \hline
+    \end{tabular}
+    \end{table}
+\noindent\textbf{Part 1 Output Logic}
+
+z is only 1 when the states are F and G. Therefore, the output is:
+
+\begin{verbatim}
+    assign z = ((y_Q == F) | (y_Q == G));
+\end{verbatim}
+
+
+
+
+\end{document}
