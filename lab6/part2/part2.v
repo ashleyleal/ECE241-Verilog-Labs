@@ -85,7 +85,11 @@ module control(
                 S_LOAD_X_WAIT   = 5'd7,
                 S_CYCLE_0       = 5'd8,
                 S_CYCLE_1       = 5'd9,
-                S_CYCLE_2       = 5'd10;
+                // Add more cycles
+                S_CYCLE_2       = 5'd10,
+                S_CYCLE_3       = 5'd11,
+                S_CYCLE_4       = 5'd12,
+                S_CYCLE_5       = 5'd13;
 
     // Next state logic aka our state table
     always@(*)
@@ -100,7 +104,13 @@ module control(
                 S_LOAD_X: next_state = go ? S_LOAD_X_WAIT : S_LOAD_X; // Loop in current state until value is input
                 S_LOAD_X_WAIT: next_state = go ? S_LOAD_X_WAIT : S_CYCLE_0; // Loop in current state until go signal goes low
                 S_CYCLE_0: next_state = S_CYCLE_1;
-                S_CYCLE_1: next_state = S_LOAD_A; // we will be done our two operations, start over after
+
+                // Following previous line??????
+                S_CYCLE_1: next_state = S_CYCLE_2;
+                S_CYCLE_2: next_state = S_CYCLE_3; 
+                S_CYCLE_3: next_state = S_CYCLE_4; 
+                S_CYCLE_4: next_state = S_CYCLE_5; 
+                S_CYCLE_5: next_state = go ? S_LOAD_A_WAIT : S_CYCLE_5; // from table not sure
             default:     next_state = S_LOAD_A;
         endcase
     end // state_table
@@ -144,6 +154,30 @@ module control(
                 alu_select_a = 2'b00; // Select register A
                 alu_select_b = 2'b10; // Select register C
                 alu_op = 1'b0; // Do Add operation
+            end
+             S_CYCLE_2: begin
+                ld_alu_out = 1'b1;
+                alu_select_a = 2'b00; 
+                alu_select_b = 2'b11; 
+                ld_a = 1'b1; 
+                alu_op = 1'b1; // Do multiply operation
+            end
+            S_CYCLE_3: begin
+                ld_alu_out = 1'b1;
+                alu_select_a = 2'b00; 
+                alu_select_b = 2'b01; 
+                ld_a = 1'b1; 
+                alu_op = 1'b0; // Do add operation
+            end
+            S_CYCLE_4: begin
+                alu_select_a = 2'b00; 
+                alu_select_b = 2'b10; 
+                ld_r = 1'b1; 
+                alu_op = 1'b0; // Do add operation
+            end
+            S_CYCLE_5: begin
+                result_valid = 1'b1; 
+                ld_a = 1'b1;
             end
         // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
         endcase
