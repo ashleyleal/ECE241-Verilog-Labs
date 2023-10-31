@@ -129,6 +129,7 @@ module control(
         alu_select_a = 2'b0;
         alu_select_b = 2'b0;
         alu_op       = 1'b0;
+        result_valid = 1'b0; 
 
         case (current_state)
             S_LOAD_A: begin
