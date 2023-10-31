@@ -6,14 +6,14 @@
 //LEDR[3:0] displays current state
 //LEDR[9] displays output
 
-module part1Demo(KEY, SW, LEDR, HEX0);
+module Lab6(
 
-    input [1:0] KEY;
-    input [1:0] SW;
-    output [9:0] LEDR;
-    output HEX0;
+input [3:0] KEY, 
+input [9:0] SW, 
+output [9:0] LEDR, 
+output [6:0] HEX0);
 
-    part1 u1 (.Clock(KEY[0]), .Reset(SW[0]), .w(SW[1]), .z(LEDR[9]), .CurState({LEDR[3:0], HEX0}));
+    part1 u1 (.Clock(KEY[0]), .Reset(SW[0]), .w(SW[1]), .z(LEDR[9]), .CurState(LEDR[3:0]));
 
 endmodule
 
@@ -84,4 +84,3 @@ module part1(Clock, Reset, w, z, CurState);
 
     assign CurState = y_Q;
 endmodule
-
