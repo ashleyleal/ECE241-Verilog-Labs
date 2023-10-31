@@ -144,34 +144,41 @@ module control(
             S_LOAD_X: begin
                 ld_x = 1'b1;
                 end
-            S_CYCLE_0: begin // Do A <- A * A
-                ld_alu_out = 1'b1; ld_a = 1'b1; // store result back into A
-                alu_select_a = 2'b00; // Select register A
-                alu_select_b = 2'b00; // Also select register A
-                alu_op = 1'b1; // Do multiply operation
+            // Multiplication select a and x
+            S_CYCLE_0: begin 
+                ld_alu_out = 1'b1; 
+                alu_select_a = 2'b00; // Select a
+                alu_select_b = 2'b11; 
+                ld_a = 1'b1; 
+                alu_op = 1'b1; 
             end
+            // Multiplication select b and x
             S_CYCLE_1: begin
-                ld_r = 1'b1; // store result in result register
-                alu_select_a = 2'b00; // Select register A
-                alu_select_b = 2'b10; // Select register C
-                alu_op = 1'b0; // Do Add operation
+                ld_alu_out = 1'b1; 
+                alu_select_a = 2'b01; 
+                alu_select_b = 2'b11; 
+                ld_b = 1'b1; 
+                alu_op = 1'b1; 
             end
+            // Multiplication select a and x
              S_CYCLE_2: begin
                 ld_alu_out = 1'b1;
-                alu_select_a = 2'b00; 
+                alu_select_a = 2'b00; // Select a
                 alu_select_b = 2'b11; 
                 ld_a = 1'b1; 
                 alu_op = 1'b1; // Do multiply operation
             end
+            // Addition select a and x
             S_CYCLE_3: begin
                 ld_alu_out = 1'b1;
-                alu_select_a = 2'b00; 
+                alu_select_a = 2'b00; // Select a
                 alu_select_b = 2'b01; 
                 ld_a = 1'b1; 
                 alu_op = 1'b0; // Do add operation
             end
+            // Addition select a and x and store in r
             S_CYCLE_4: begin
-                alu_select_a = 2'b00; 
+                alu_select_a = 2'b00; // Select a
                 alu_select_b = 2'b10; 
                 ld_r = 1'b1; 
                 alu_op = 1'b0; // Do add operation
