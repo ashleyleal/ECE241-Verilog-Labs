@@ -2,130 +2,35 @@
 vlib work
 
 # Compile Verilog files
-vlog part1demo.v
+vlog part1.v
 
 # Simulate the design
-vsim Lab6
+vsim part1
 
 log {/*}
 add wave {/*}
 
-# KEY[0] Clock
-# SW[1] w
-# SW[0] Reset
-
-# Reset
-force {SW[0]} 1
-force {KEY[0]} 1
-run 5ns
-force {SW[0]} 0
-force {KEY[0]} 0
-run 5ns
-
-# Test case 1: State A to State F
-# Expected output: 1
-# w = 1 1 1 1
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-# Reset
-force {SW[0]} 1
-force {KEY[0]} 1
-run 5ns
-force {SW[0]} 0
-force {KEY[0]} 0
-run 5ns
-
-# Test case 2: State A to State G
-# Expected output: 1
-# w = 1 1 0 1
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 0
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-# Reset
-force {SW[0]} 1
-force {KEY[0]} 1
-run 5ns
-force {SW[0]} 0
-force {KEY[0]} 0
-run 5ns
-
-# Test case 3: State A to State A
-# Expected output: 0
-# w = 0 0 0 
-
-force {SW[1:0]} 01
-force {KEY[0]} 0
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 0
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 0
-run 5ns
-
-# Reset
-force {SW[0]} 1
-force {KEY[0]} 1
-run 5ns
-force {SW[0]} 0
-force {KEY[0]} 0
-run 5ns
-
-# Test case 4: State F to State G
-# Expected output: 1
-# w = 1 1 1 1 0 1
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 0
-run 5ns
-
-force {SW[1:0]} 01
-force {KEY[0]} 1
-run 5ns
+force {Clock} 0 0ns, 1 {100ps} -r 200ps
+force {Reset} 0 0ns
+# w = 1111 A-F
+force {w} 1 0ps 
+force {Reset} 1 800ps, 0 {1000ps}
+# w = 1101 A-G
+force {w} 1 1050ps
+force {w} 0 1650ps
+force {w} 1 1850ps 
+force {Reset} 1 2000ps, 0 {2200ps}
+# w = 000 A-A
+force {w} 0 2250ps 
+force {Reset} 1 2800ps, 0 {3000ps}
+# w = 111101 A-F-G
+force {w} 1 3050ps
+force {w} 0 3850ps
+force {w} 1 4050ps 
+force {Reset} 1 4200ps
+# reset on
+force {w} 1 4250ps
+force {w} 0 5050ps
+force {w} 1 5250ps 
+force {Reset} 0 5400ps
+run 10ns
