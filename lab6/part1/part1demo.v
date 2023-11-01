@@ -10,8 +10,7 @@ module Lab6(
 
 input [3:0] KEY, 
 input [9:0] SW, 
-output [9:0] LEDR, 
-output [6:0] HEX0);
+output [9:0] LEDR); 
 
     part1 u1 (.Clock(KEY[0]), .Reset(SW[0]), .w(SW[1]), .z(LEDR[9]), .CurState(LEDR[3:0]));
 
