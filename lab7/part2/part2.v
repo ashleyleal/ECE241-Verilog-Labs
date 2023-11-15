@@ -33,21 +33,19 @@ module part2 (
   output wire oPlot;  // Pixel draw enable
   output wire oDone;  // goes high when finished drawing frame
 
-  wire ld_x, ld_y, ld_c, black_en, finish, black_done;
+  wire ld_x, ld_y, ld_c, black_en, finish, blackDone;
 
   control C0 (
       .clk(iClock),
       .Reset(iResetn),
-
       .black(iBlack),
-      
       .ld_x(ld_x),
       .ld_y(ld_y),
-      .plot(iPlotBox),
+      .draw(iPlotBox),
       .ld(iLoadX),
       .write_en(oPlot),
       .finish(finish),
-      .black_done(black_done),
+      .blackDone(blackDone),
       .black_en(black_en),
       .oDone(oDone)
   );
@@ -66,7 +64,7 @@ module part2 (
       .color_in(iColour),
       .start(oPlot),
       .finish(finish),
-      .black_done(black_done)
+      .blackDone(blackDone)
   );
 
 
@@ -76,11 +74,11 @@ module control (
     input clk,
     input Reset,
     input black,
-    input black_done,
+    input blackDone,
     input finish,
     output reg write_en,
     input ld,
-    input plot,
+    input draw,
     output reg ld_x,
     ld_y,
     black_en,
@@ -102,11 +100,11 @@ module control (
     case (current_state)
       S_LOAD_x: next_state = black ? S_Black : (ld ? S_LOAD_x_wait : S_LOAD_x);
       S_LOAD_x_wait: next_state = black ? S_Black : (ld ? S_LOAD_x_wait : S_LOAD_y);
-      S_LOAD_y: next_state = black ? S_Black : (plot ? S_LOAD_y_wait : S_LOAD_y);
-      S_LOAD_y_wait: next_state = black ? S_Black : (plot ? S_LOAD_y_wait : Drawing);
+      S_LOAD_y: next_state = black ? S_Black : (draw ? S_LOAD_y_wait : S_LOAD_y);
+      S_LOAD_y_wait: next_state = black ? S_Black : (draw ? S_LOAD_y_wait : Drawing);
       Drawing: next_state = black ? S_Black : (finish ? Done : Drawing);
       Done: next_state = black ? S_Black : (ld ? S_LOAD_x : Done);
-      S_Black: next_state = black_done ? Done : S_Black;
+      S_Black: next_state = blackDone ? Done : S_Black;
     endcase
   end
 
@@ -163,7 +161,7 @@ module datapath (
     output reg [2:0] color,
     output reg [7:0] x,
     output reg [6:0] y,
-    output reg black_done,
+    output reg blackDone,
     finish
 );
 
@@ -195,7 +193,7 @@ module datapath (
       y_prev <= 7'b0;
       color <= 3'b0;
       finish = 1'b0;
-      black_done = 1'b0;
+      blackDone = 1'b0;
     end
   end
 
@@ -209,19 +207,18 @@ module datapath (
     
     else if (black_en) begin
       if (x_counter == 8'b10100000 & y_counter == 7'b1111000) begin
+        blackDone = 1'b1;
         x_counter <= 8'b0;
         y_counter <= 8'b0;
-        black_done = 1'b1;
 
-      end 
-      
-      else if (x_counter == 8'd159) begin
+      end else if (x_counter == 8'd159) begin
         x_counter <= 8'b0;
         y_counter <= y_counter + 1'b1;
-      end
 
-      else if (x_counter == 8'b0 & y_counter == 8'b0) black_done = 1'b0;
-      else x_counter <= x_counter + 1'b1;
+      end else if (x_counter == 8'b0 & y_counter == 8'b0) begin
+        blackDone = 1'b0;
+
+      end else x_counter <= x_counter + 1'b1;
     end 
     
     else if (start) begin
@@ -231,9 +228,9 @@ module datapath (
       end 
       else begin
         finish <= 1'b0;
-        x <= x_prev + {draw_counter[1], draw_counter[0]}; // update x with concatenation 
+        x <= x_prev + {draw_counter[1], draw_counter[0]}; // update x with concatenation
         y <= y_prev + {draw_counter[3], draw_counter[2]}; // update x with concatenation
-        draw_counter <= draw_counter + 1'b1; // draw one
+        draw_counter <= draw_counter + 1'b1;
       end
     end
   end
