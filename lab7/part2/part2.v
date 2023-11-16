@@ -195,17 +195,12 @@ module datapath (
       finish = 1'b0;
       blackDone = 1'b0;
     end
-  end
 
-  //x y counter	
-  always @(posedge clk) begin
     if (!Reset) begin
       draw_counter = 5'b0;
       x_counter <= 8'b0;
       y_counter <= 8'b0;
-    end 
-    
-    else if (black_en) begin
+    end else if (black_en) begin
       if (x_counter == 8'b10100000 & y_counter == 7'b1111000) begin
         blackDone = 1'b1;
         x_counter <= 8'b0;
@@ -219,20 +214,18 @@ module datapath (
         blackDone = 1'b0;
 
       end else x_counter <= x_counter + 1'b1;
-    end 
-    
-    else if (start) begin
+    end else if (start) begin
       if (draw_counter == 5'd16) begin
         draw_counter <= 5'b0;
         finish = 1'b1;
-      end 
-      else begin
+      end else begin
         finish <= 1'b0;
-        x <= x_prev + {draw_counter[1], draw_counter[0]}; // update x with concatenation
-        y <= y_prev + {draw_counter[3], draw_counter[2]}; // update x with concatenation
+        x <= x_prev + {draw_counter[1], draw_counter[0]};  // update x with concatenation
+        y <= y_prev + {draw_counter[3], draw_counter[2]};  // update x with concatenation
         draw_counter <= draw_counter + 1'b1;
       end
     end
+
   end
 
 endmodule
